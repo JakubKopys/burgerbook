@@ -1,10 +1,12 @@
 require 'jsonapi/serializable'
 
 class RestaurantsSerializer
+  def initialize(renderer: JSONAPI::Serializable::Renderer.new)
+    @renderer = renderer
+  end
   def call(restaurants)
-    renderer = JSONAPI::Serializable::Renderer.new
-    json = renderer.render(restaurants,
-                           class: { Restaurant: SerializableRestaurant })
+    json = @renderer.render(restaurants,
+                            class: { Restaurant: SerializableRestaurant })
 
     JSON.dump(json)
   end

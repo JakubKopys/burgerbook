@@ -12,9 +12,11 @@ module Api
         end
 
         def initialize(interactor: RestaurantsNearMe.new,
-                       serializer: RestaurantsSerializer.new)
+                       restaurant_serializer: RestaurantsSerializer.new,
+                       errors_serializer: ErrorsSerializer.new)
           @interactor = interactor
-          @serializer = serializer
+          @restaurant_serializer = restaurant_serializer
+          @errors_serializer = errors_serializer
         end
 
         def call(params)
@@ -24,11 +26,15 @@ module Api
 
             result = @interactor.call(x: x, y: y)
 
-            # # TODO: check interactor result
-            restaurants = result.restaurants
-            self.body = @serializer.call(restaurants)
+            if result.successful?
+              restaurants = result.restaurants
+              self.body = @restaurant_serializer.call(restaurants)
+            else
+              self.body = @errors_serializer.call(result.errors)
+              self.status = 422
+            end
           else
-            self.body = JSON.dump({errors: "Invalid parameters"})
+            self.body = JSON.dump({ errors: "Invalid parameters" })
             self.status = 422
           end
         end
