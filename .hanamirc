@@ -1,0 +1,3 @@
+project=burgerbook
+test=minitest
+template=erb
