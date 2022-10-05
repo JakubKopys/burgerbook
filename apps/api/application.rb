@@ -22,7 +22,6 @@ module Api
         'controllers',
         'resources',
         'serializers',
-        'views'
       ]
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
